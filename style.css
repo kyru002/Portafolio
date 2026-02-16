@@ -497,7 +497,8 @@ body {
   display: block;
   width: 100%;
   height: 100%;
-  background-size: 100vw 100vh;
+  background-size: cover;
+  background-position: center;
 }
 
 .img {
@@ -506,18 +507,22 @@ body {
   display: block;
   width: 100%;
   height: 100%;
-  background-size: 100vw 100vh;
+  background-size: cover;
+  background-position: center;
   background-image: url("silla back der.png");
 }
 
 .img2 {
   position: absolute;
   top: 0;
+  left: 0;
   display: block;
   width: 50%;
   height: 100%;
-  background-size: 100vw 100vh;
+  background-size: cover;
+  background-position: center;
   background-image: url("silla frent izq.png");
+  z-index: 2;
 }
 
 .arrow {
@@ -547,13 +552,14 @@ body {
   border-radius: 100%;
   width: 50px;
   height: 50px;
-  position: relative;
-  left: -25px;
+  position: absolute;
   left: 50%;
   top: 50%;
-  transform: translateY(-50%) translateX(-50%);
+  transform: translate(-50%, -50%);
   z-index: 10;
   transition: border-color 0.5s ease-in-out;
+  cursor: col-resize;
+  touch-action: none;
 }
 
 .dragme:hover {
@@ -673,7 +679,6 @@ body {
   top: 0;
   left: 0;
   pointer-events: none;
-  /* Dejamos pasar clicks si no es al cuadro */
 }
 
 .single-frame {
@@ -741,8 +746,7 @@ body {
   pointer-events: none;
 }
 
-/* Posiciones de galería (muy separados) */
-
+/* Posiciones de los marcos */
 #f1 {
   top: 15%;
   left: 6%;
@@ -750,12 +754,34 @@ body {
 
 #f2 {
   top: 25%;
-  left: 30%;
+  left: 35%;
 }
 
 #f3 {
   top: 10%;
-  left: 55%;
+  left: 62%;
+}
+
+/* ==================== BEFORE/AFTER SLIDER (Slide 1) ==================== */
+.border {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.cont {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1px solid transparent;
+  position: relative;
+  margin: 0 auto;
+  overflow: hidden;
+  touch-action: pan-y;
 }
 
 /* ==================== RESPONSIVE ==================== */
@@ -780,7 +806,60 @@ body {
   }
 
   .navbar-icons {
-    display: none;
+    gap: 10px;
+  }
+
+  .navbar-icons i {
+    font-size: 1.5rem;
+  }
+
+  /* Gallery icons - 2 columnas en tablets */
+  .gallery-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 30px;
+    padding: 60px 40px;
+  }
+
+  .icon {
+    width: 12vw;
+    max-width: 80px;
+  }
+
+  .gallery-text {
+    font-size: 15vw;
+  }
+
+  /* Frames - ajustar posiciones en tablets */
+  .single-frame {
+    width: 240px;
+    height: 160px;
+    border: 10px solid #3e2723;
+  }
+
+  #f1 {
+    top: 12%;
+    left: 5%;
+  }
+
+  #f2 {
+    top: 22%;
+    left: 38%;
+  }
+
+  #f3 {
+    top: 8%;
+    left: 68%;
+  }
+
+  /* Before/After Slider responsive */
+  .dragme {
+    width: 45px;
+    height: 45px;
+  }
+
+  .text li {
+    font-size: 1.5em;
   }
 }
 
@@ -817,6 +896,46 @@ body {
   .text-overlay {
     justify-content: center;
   }
+
+  /* Slide indicators más pequeños */
+  .slide-indicators {
+    right: 15px;
+    gap: 10px;
+  }
+
+  .indicator {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* Frames - layout más compacto en tablets pequeñas */
+  .single-frame {
+    width: 200px;
+    height: 135px;
+  }
+
+  #f1 {
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #f2 {
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #f3 {
+    top: 70%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Hover corregido para centrado */
+  .single-frame:hover {
+    transform: translateX(-50%) scale(1.08) translateY(-5px);
+  }
 }
 
 @media (max-width: 576px) {
@@ -830,6 +949,85 @@ body {
   .text-right2 {
     font-size: 5vw;
   }
+
+  /* Gallery icons - 2 columnas en móviles */
+  .gallery-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 20px;
+    padding: 80px 20px;
+  }
+
+  .icon {
+    width: 15vw;
+    max-width: 70px;
+  }
+
+  .gallery-text {
+    font-size: 18vw;
+    letter-spacing: 0.3rem;
+  }
+
+  /* Frames más pequeños en móviles */
+  .single-frame {
+    width: 180px;
+    height: 120px;
+    border: 8px solid #3e2723;
+  }
+
+  #f1 {
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #f2 {
+    top: 38%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #f3 {
+    top: 68%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .single-frame .inner-frame::after {
+    font-size: 1rem;
+    padding: 6px;
+  }
+
+  /* Hover corregido para centrado */
+  .single-frame:hover {
+    transform: translateX(-50%) scale(1.08) translateY(-5px);
+  }
+
+  /* Before/After Slider responsive */
+  .dragme {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dragme:before,
+  .dragme:after {
+    height: 200px;
+  }
+
+  .text li {
+    font-size: 1.3em;
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+
+  /* Navbar más compacto */
+  .navbar-logo img {
+    height: 50px;
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 2rem;
+  }
 }
 
 @media (max-width: 420px) {
@@ -840,5 +1038,97 @@ body {
 
   .slide {
     font-size: 1.25rem;
+  }
+
+  /* Gallery - ajustes extra pequeños */
+  .gallery-container {
+    gap: 15px;
+    padding: 60px 15px;
+  }
+
+  .icon {
+    width: 18vw;
+    max-width: 60px;
+  }
+
+  .gallery-text {
+    font-size: 20vw;
+    letter-spacing: 0.2rem;
+  }
+
+  /* Frames aún más pequeños */
+  .single-frame {
+    width: 150px;
+    height: 100px;
+    border: 6px solid #3e2723;
+  }
+
+  #f1 {
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #f2 {
+    top: 42%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #f3 {
+    top: 74%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Hover corregido para centrado */
+  .single-frame:hover {
+    transform: translateX(-50%) scale(1.08) translateY(-5px);
+  }
+
+  /* Before/After Slider más pequeño */
+  .dragme {
+    width: 35px;
+    height: 35px;
+  }
+
+  .dragme:before,
+  .dragme:after {
+    height: 150px;
+  }
+
+  .text li {
+    font-size: 1.1em;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+
+  /* Ocultar cursor personalizado en móviles */
+  .custom-cursor {
+    display: none;
+  }
+
+  body {
+    cursor: auto;
+  }
+
+  /* Slide indicators más pequeños */
+  .slide-indicators {
+    right: 10px;
+    gap: 8px;
+  }
+
+  .indicator {
+    width: 8px;
+    height: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .indicator.active {
+    transform: scale(1.2);
+  }
+
+  .indicator:hover {
+    transform: scale(1.1);
   }
 }

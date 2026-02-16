@@ -96,9 +96,20 @@ document.addEventListener("DOMContentLoaded", () => {
   ScrollTrigger.refresh();
 
   // Recalcula el scroll si cambia el tamaño de pantalla
+  let resizeTimer;
   window.addEventListener("resize", () => {
-    tl.scrollTrigger.end = "+=" + getTotalScroll();
-    ScrollTrigger.refresh();
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      tl.scrollTrigger.end = "+=" + getTotalScroll();
+      ScrollTrigger.refresh();
+      
+      // Resetear slider before/after al cambiar tamaño
+      if ($(".img2").length) {
+        $(".img2").css("width", "50%");
+        $(".dragme").css("left", "50%");
+        $(".cont").removeClass("cover");
+      }
+    }, 250);
   });
 
   // Efecto hover (mueve imágenes al pasar el ratón)
@@ -133,24 +144,96 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+// Before/After Slider - Compatible con mouse y touch
 $(function () {
-  // Initialize a draggable with the axis option specified.
-  $(".dragme").draggable({
-    axis: "x",
-    containment: "parent",
-    revert: true,
-    revertDuration: 10,
-    drag: function (e, ui) {
-      var pos = ui.position;
-      $(".img2").css("width", pos.left);
-    },
-    start: function (e, ui) {
-      $(".cont").toggleClass("cover");
-    },
-    stop: function (e, ui) {
-      $(".img2").css("width", "50%");
-      $(".cont").toggleClass("cover");
+  const $dragme = $(".dragme");
+  const $img2 = $(".img2");
+  const $cont = $(".cont");
+  
+  if ($dragme.length === 0) return;
+
+  let isDragging = false;
+  let startX = 0;
+  let currentLeft = 0;
+
+  // Prevenir scroll mientras se arrastra
+  $cont.on("touchmove", function(e) {
+    if (isDragging) {
+      e.preventDefault();
     }
+  }, { passive: false });
+
+  // Función para actualizar la posición
+  function updatePosition(clientX) {
+    const container = $cont[0];
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    
+    $img2.css("width", percentage + "%");
+    $dragme.css("left", percentage + "%");
+  }
+
+  // Mouse events
+  $dragme.on("mousedown", function(e) {
+    e.preventDefault();
+    isDragging = true;
+    startX = e.clientX;
+    $cont.addClass("cover");
+    $(document).css("user-select", "none");
+  });
+
+  $(document).on("mousemove", function(e) {
+    if (!isDragging) return;
+    e.preventDefault();
+    updatePosition(e.clientX);
+  });
+
+  $(document).on("mouseup", function() {
+    if (!isDragging) return;
+    isDragging = false;
+    $img2.css("width", "50%");
+    $dragme.css("left", "50%");
+    $cont.removeClass("cover");
+    $(document).css("user-select", "");
+  });
+
+  // Touch events
+  $dragme.on("touchstart", function(e) {
+    isDragging = true;
+    startX = e.touches[0].clientX;
+    $cont.addClass("cover");
+  });
+
+  $(document).on("touchmove", function(e) {
+    if (!isDragging) return;
+    updatePosition(e.touches[0].clientX);
+  });
+
+  $(document).on("touchend touchcancel", function() {
+    if (!isDragging) return;
+    isDragging = false;
+    $img2.css("width", "50%");
+    $dragme.css("left", "50%");
+    $cont.removeClass("cover");
+  });
+
+  // Click/Tap en el contenedor
+  $cont.on("click", function(e) {
+    if (isDragging) return;
+    if (e.target === $dragme[0] || $dragme[0].contains(e.target)) return;
+    
+    const clientX = e.clientX;
+    
+    $cont.addClass("cover");
+    updatePosition(clientX);
+    
+    setTimeout(() => {
+      $img2.css("width", "50%");
+      $dragme.css("left", "50%");
+      $cont.removeClass("cover");
+    }, 300);
   });
 });
-
